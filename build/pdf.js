@@ -1306,7 +1306,7 @@ async function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
 
   const workerId = await worker.messageHandler.sendWithPromise("GetDocRequest", {
     docId,
-    apiVersion: '2.13.216',
+    apiVersion: '2.13.218',
     source: {
       data: source.data,
       url: source.url,
@@ -1509,6 +1509,10 @@ class PDFDocumentProxy {
 
   getPageLabels() {
     return this._transport.getPageLabels();
+  }
+
+  getPageLabelDetails() {
+    return this._transport.getPageLabelDetails();
   }
 
   getPageLayout() {
@@ -3059,6 +3063,10 @@ class WorkerTransport {
     return this.messageHandler.sendWithPromise("GetPageLabels", null);
   }
 
+  getPageLabelDetails() {
+    return this.messageHandler.sendWithPromise("GetPageLabelDetails", null);
+  }
+
   getPageLayout() {
     return this.messageHandler.sendWithPromise("GetPageLayout", null);
   }
@@ -3403,9 +3411,9 @@ class InternalRenderTask {
 
 }
 
-const version = '2.13.216';
+const version = '2.13.218';
 exports.version = version;
-const build = '399a0ec60';
+const build = 'e40506e31';
 exports.build = build;
 
 /***/ }),
@@ -15768,8 +15776,8 @@ var _svg = __w_pdfjs_require__(22);
 
 var _xfa_layer = __w_pdfjs_require__(20);
 
-const pdfjsVersion = '2.13.216';
-const pdfjsBuild = '399a0ec60';
+const pdfjsVersion = '2.13.218';
+const pdfjsBuild = 'e40506e31';
 {
   if (_is_node.isNodeJS) {
     const {

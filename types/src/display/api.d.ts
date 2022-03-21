@@ -816,6 +816,7 @@ export class PDFDocumentProxy {
      *   indexes, or `null` when no page labels are present in the PDF file.
      */
     getPageLabels(): Promise<Array<string> | null>;
+    getPageLabelDetails(): any;
     /**
      * @returns {Promise<string>} A promise that is resolved with a {string}
      *   containing the page layout name.

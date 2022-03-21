@@ -165,7 +165,7 @@ var WorkerMessageHandler = /*#__PURE__*/function () {
       var WorkerTasks = [];
       var verbosity = (0, _util.getVerbosityLevel)();
       var apiVersion = docParams.apiVersion;
-      var workerVersion = '2.13.216';
+      var workerVersion = '2.13.218';
 
       if (apiVersion !== workerVersion) {
         throw new Error("The API version \"".concat(apiVersion, "\" does not match ") + "the Worker version \"".concat(workerVersion, "\"."));
@@ -534,6 +534,9 @@ var WorkerMessageHandler = /*#__PURE__*/function () {
       });
       handler.on("GetPageLabels", function wphSetupGetPageLabels(data) {
         return pdfManager.ensureCatalog("pageLabels");
+      });
+      handler.on("GetPageLabelDetails", function wphSetupGetPageLabelDetails(data) {
+        return pdfManager.ensureCatalog("pageLabelDetails");
       });
       handler.on("GetPageLayout", function wphSetupGetPageLayout(data) {
         return pdfManager.ensureCatalog("pageLayout");
@@ -65257,6 +65260,13 @@ var Catalog = /*#__PURE__*/function () {
       return (0, _util.shadow)(this, "pageLabels", obj);
     }
   }, {
+    key: "pageLabelDetails",
+    get: function get() {
+      var obj = null;
+      obj = this._readPageLabelDetails();
+      return (0, _util.shadow)(this, "pageLabelDetails", obj);
+    }
+  }, {
     key: "_readPageLabels",
     value: function _readPageLabels() {
       var obj = this._catDict.getRaw("PageLabels");
@@ -65357,7 +65367,91 @@ var Catalog = /*#__PURE__*/function () {
             currentLabel = "";
         }
 
-        pageLabels[i] = prefix + currentLabel;
+        pageLabels[i] = {
+          value: prefix + currentLabel,
+          labelDict: labelDict
+        };
+        currentIndex++;
+      }
+
+      return pageLabels;
+    }
+  }, {
+    key: "_readPageLabelDetails",
+    value: function _readPageLabelDetails() {
+      var obj = this._catDict.getRaw("PageLabels");
+
+      if (!obj) {
+        return null;
+      }
+
+      var pageLabels = new Array(this.numPages);
+      var style = null,
+          prefix = "";
+      var numberTree = new _name_number_tree.NumberTree(obj, this.xref);
+      var nums = numberTree.getAll();
+      var currentIndex = 1;
+
+      for (var i = 0, ii = this.numPages; i < ii; i++) {
+        if (i in nums) {
+          var labelDict = nums[i];
+
+          if (!(labelDict instanceof _primitives.Dict)) {
+            throw new _util.FormatError("PageLabel is not a dictionary.");
+          }
+
+          if (labelDict.has("Type") && !(0, _primitives.isName)(labelDict.get("Type"), "PageLabel")) {
+            throw new _util.FormatError("Invalid type in PageLabel dictionary.");
+          }
+
+          if (labelDict.has("S")) {
+            var s = labelDict.get("S");
+
+            if (!(s instanceof _primitives.Name)) {
+              throw new _util.FormatError("Invalid style in PageLabel dictionary.");
+            }
+
+            style = {
+              D: "decimal_arabic",
+              R: "uppercase_roman",
+              r: "lowercase_roman",
+              A: "uppercase_latin",
+              a: "lowercase_latin"
+            }[s.name];
+          } else {
+            style = "no_style";
+          }
+
+          if (labelDict.has("P")) {
+            var p = labelDict.get("P");
+
+            if (!(p instanceof String)) {
+              throw new _util.FormatError("Invalid prefix in PageLabel dictionary.");
+            }
+
+            prefix = (0, _util.stringToPDFString)(p);
+          } else {
+            prefix = "";
+          }
+
+          if (labelDict.has("St")) {
+            var st = labelDict.get("St");
+
+            if (!(Number.isInteger(st) && st >= 1)) {
+              throw new _util.FormatError("Invalid start in PageLabel dictionary.");
+            }
+
+            currentIndex = st;
+          } else {
+            currentIndex = 1;
+          }
+        }
+
+        pageLabels[i] = {
+          firstPageNum: currentIndex,
+          prefix: prefix,
+          style: style
+        };
         currentIndex++;
       }
 
@@ -92700,8 +92794,8 @@ Object.defineProperty(exports, "WorkerMessageHandler", ({
 
 var _worker = __w_pdfjs_require__(1);
 
-var pdfjsVersion = '2.13.216';
-var pdfjsBuild = '399a0ec60';
+var pdfjsVersion = '2.13.218';
+var pdfjsBuild = 'e40506e31';
 })();
 
 /******/ 	return __webpack_exports__;
