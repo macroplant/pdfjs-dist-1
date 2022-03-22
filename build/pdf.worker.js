@@ -117,7 +117,7 @@ class WorkerMessageHandler {
     const WorkerTasks = [];
     const verbosity = (0, _util.getVerbosityLevel)();
     const apiVersion = docParams.apiVersion;
-    const workerVersion = '2.13.218';
+    const workerVersion = '2.13.223';
 
     if (apiVersion !== workerVersion) {
       throw new Error(`The API version "${apiVersion}" does not match ` + `the Worker version "${workerVersion}".`);
@@ -53978,12 +53978,12 @@ class Catalog {
     let style = null,
         prefix = "";
     const numberTree = new _name_number_tree.NumberTree(obj, this.xref);
-    const nums = numberTree.getAll();
+    const numberTreeMap = numberTree.getAll();
     let currentIndex = 1;
 
     for (let i = 0, ii = this.numPages; i < ii; i++) {
-      if (i in nums) {
-        const labelDict = nums[i];
+      if (numberTreeMap.has(i)) {
+        const labelDict = numberTreeMap.get(i);
 
         if (!(labelDict instanceof _primitives.Dict)) {
           throw new _util.FormatError("PageLabel is not a dictionary.");
@@ -73909,8 +73909,8 @@ Object.defineProperty(exports, "WorkerMessageHandler", ({
 
 var _worker = __w_pdfjs_require__(1);
 
-const pdfjsVersion = '2.13.218';
-const pdfjsBuild = 'e40506e31';
+const pdfjsVersion = '2.13.223';
+const pdfjsBuild = '822fb1cad';
 })();
 
 /******/ 	return __webpack_exports__;

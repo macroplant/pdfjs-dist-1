@@ -165,7 +165,7 @@ var WorkerMessageHandler = /*#__PURE__*/function () {
       var WorkerTasks = [];
       var verbosity = (0, _util.getVerbosityLevel)();
       var apiVersion = docParams.apiVersion;
-      var workerVersion = '2.13.218';
+      var workerVersion = '2.13.223';
 
       if (apiVersion !== workerVersion) {
         throw new Error("The API version \"".concat(apiVersion, "\" does not match ") + "the Worker version \"".concat(workerVersion, "\"."));
@@ -65389,12 +65389,12 @@ var Catalog = /*#__PURE__*/function () {
       var style = null,
           prefix = "";
       var numberTree = new _name_number_tree.NumberTree(obj, this.xref);
-      var nums = numberTree.getAll();
+      var numberTreeMap = numberTree.getAll();
       var currentIndex = 1;
 
       for (var i = 0, ii = this.numPages; i < ii; i++) {
-        if (i in nums) {
-          var labelDict = nums[i];
+        if (numberTreeMap.has(i)) {
+          var labelDict = numberTreeMap.get(i);
 
           if (!(labelDict instanceof _primitives.Dict)) {
             throw new _util.FormatError("PageLabel is not a dictionary.");
@@ -92794,8 +92794,8 @@ Object.defineProperty(exports, "WorkerMessageHandler", ({
 
 var _worker = __w_pdfjs_require__(1);
 
-var pdfjsVersion = '2.13.218';
-var pdfjsBuild = 'e40506e31';
+var pdfjsVersion = '2.13.223';
+var pdfjsBuild = '822fb1cad';
 })();
 
 /******/ 	return __webpack_exports__;
